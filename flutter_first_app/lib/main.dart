@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 92, 208, 77)),
         ),
         home: MyHomePage(),
       ),
@@ -35,13 +35,13 @@ class MyAppState extends ChangeNotifier {
   }
 
   // ↓ Add the code below.
-  var favorites = <WordPair>[];
+  var users = <WordPair>[];
 
   void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
+    if (users.contains(current)) {
+      users.remove(current);
     } else {
-      favorites.add(current);
+      users.add(current);
     }
     notifyListeners();
   }
@@ -60,11 +60,16 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = LoginPage();
         break;
       case 1:
-        page = FavoritesPage();
+        page = CreateUserPage();
         break;
+      case 2:
+        page = DeleteUserPage();
+        break;  
+      case 3:
+        page = UpdateUserPage(); 
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -78,12 +83,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 extended: constraints.maxWidth >= 600,  // ← Here.
                 destinations: [
                   NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
+                    icon: Icon(Icons.login),
+                    label: Text('Login'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
+                    icon: Icon(Icons.create),
+                    label: Text('Create Users'),
+                  ),
+                  NavigationRailDestination(
+                    icon:  Icon(Icons.delete),
+                    label: Text("Delete Users"),  
+                  ),
+                  NavigationRailDestination(
+                    icon:  Icon(Icons.update),
+                    label: Text("Update Users"),  
                   ),
                 ],
                 selectedIndex: selectedIndex,
@@ -108,104 +121,204 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 
-class GeneratorPage extends StatelessWidget {
+class UpdateUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
-
-    return Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                labelText: "Email",
+              ),
+            ),
+            const SizedBox(height: 16),
+            const TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "Password",
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Søren er nu blevet leder af hulen"),
+                  ),
+                );
+              },
+              child: const Text("Opdater bruger"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+                   
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+      ),
+    body:Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
-            ],
+          const TextField(
+            decoration: InputDecoration(
+              labelText: "Email",
           ),
-        ],
       ),
-    );
+          const SizedBox(height: 16),
+          const TextField(
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: "Password",
+            ),
+          ),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: () {  ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Søren din bandit kan du så stå op')),);}, 
+            child: const Text('Login'),),
+
+             const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateUserPage()),
+                );
+              }, 
+              child: const Text("Opret Bruger"),
+            
+                ),
+              ],
+            ),
+          ),
+       );
   }
 }
 
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
-
-  final WordPair pair;
-
-   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-
-        // ↓ Make the following change.
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
-        ),
-      ),
-    );
-  }
-}
-class FavoritesPage extends StatelessWidget {
+class DeleteUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-
-    if (appState.favorites.isEmpty) {
-      return Center(
-        child: Text('No favorites yet.'),
-      );
-    }
-
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text('You have '
-              '${appState.favorites.length} favorites:'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                labelText: "Email",
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Søren må nu gerne være med i hulen"),
+                  ),
+                );
+              },
+              child: const Text("Slet Bruger"),
+            ),
+          ],
         ),
-        for (var pair in appState.favorites)
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
+      ),
+    );
+  }
+}
+
+class CreateUserPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "First Name",
+                  ),
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "Last Name",
+                  ),
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                  ),
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "Confirm Email",
+                  ),
+                ),
+                const TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                  ),
+                ),
+                const TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                  ),
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "Address",
+                  ),
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "Postal",
+                  ),
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    labelText: "City",
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Søren du må ikke være med i vores hule"),
+                      ),
+                    );
+                  },
+                  child: const Text("Opret Bruger"),
+                ),
+              ],
+            ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }
