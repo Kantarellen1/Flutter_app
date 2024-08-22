@@ -27,5 +27,4 @@ class User {
     };
   }
 
-  static Future<User> empty() {}
 }

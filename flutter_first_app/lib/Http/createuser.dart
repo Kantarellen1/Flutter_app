@@ -1,16 +1,23 @@
+import 'package:flutter_first_app/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_intro/models/user.dart';
 import 'dart:convert';
+import 'package:flutter_first_app/config/api_config.dart';
 
 
-Future<User> createUser(String title) async {
+
+
+Future<User> createUser(String email, String username, String password,) async {
+  final String baseUrl = ApiConfig.apiUrl;
   final response = await http.post(
-    Uri.parse('server=mysql9.dandomain.dk;database=saaapidk_db;user=saaapidk;password=HarmonyEventPW_140824;'),  
+    Uri.parse('$baseUrl/api/user/signup'),  
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, String>{
-      'title': title,
+      
+      'email' : email,
+      'username': username,
+      'password':password
     }),
   );
   if (response.statusCode==201){
@@ -18,7 +25,9 @@ Future<User> createUser(String title) async {
 
   }
   else {
-    throw Exception('failed create');
+    
+    throw Exception('Failed to create user: ${response.statusCode} - ${response.body}');
+  }
   
 }
-}
+
