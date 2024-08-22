@@ -1,6 +1,5 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -61,13 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = LoginPage();
-        break;
       case 1:
         page = CreateUserPage();
-        break;
       case 2:
         page = DeleteUserPage();
-        break;  
       case 3:
         page = UpdateUserPage(); 
       default:
