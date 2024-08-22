@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:html';
 import 'dart:io';
-
+import 'package:flutter_first_app/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_intro/models/user.dart';
+
 // hent bruger
 Future<User>fetchuser() async{
   final response = await http.get(Uri.parse('server=mysql9.dandomain.dk;database=saaapidk_db;user=saaapidk;password=HarmonyEventPW_140824;'),

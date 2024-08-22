@@ -1,31 +1,29 @@
-import 'package:flutter/material.dart';
-
 class User {
   final int id;
   final String email;
-  final String Username;
+  final String username;
 
   const User({
     required this.id,
     required this.email,
-    required this.Username,
+    required this.username,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {  
-        'id': int id,
-        'email': String email,
-        'Username': String Username,
-      } =>
-        User(
-          id: id,
-        email: email,
-      Username:  Username,
-        ),
-      _ => throw const FormatException('Failed to load User.'),
-    };
+    // Assuming the json object always contains the expected keys
+    return User(
+      id: json['id'],
+      email: json['email'],
+      username: json['username'],
+    );
   }
 
-  static Future<User> empty() {}
+  // An empty User object factory for cases where you need a default User
+  factory User.empty() {
+    return const User(
+      id: 0,
+      email: '',
+      username: '',
+    );
+  }
 }
