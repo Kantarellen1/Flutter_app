@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_intro/loginpage.dart';
 
 void main() {
   runApp(MyApp());
@@ -182,8 +183,11 @@ class LoginPage extends StatelessWidget {
             ),
           ),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: () {  ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Søren din bandit kan du så stå op')),);}, 
+            ElevatedButton(onPressed: () 
+            {  ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Søren din bandit kan du så stå op')),);
+            fetchuser();
+            }, 
             child: const Text('Login'),),
 
              const SizedBox(height: 16),
