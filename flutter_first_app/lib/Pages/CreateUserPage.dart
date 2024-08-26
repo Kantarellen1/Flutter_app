@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_first_app/Http/createuser.dart';
 
-
-
+//Søren fixer det lige
 
 class CreateUserPage extends StatelessWidget {
   @override
@@ -67,6 +67,7 @@ class CreateUserPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
+                    //createUser(String email, String username, String password);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Søren du må ikke være med i vores hule"),

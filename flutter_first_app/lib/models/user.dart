@@ -1,29 +1,20 @@
-class User {
-  final int id;
+class LoginDTO {
   final String email;
-  final String username;
+  final String password;
 
-  const User({
-    required this.id,
-    required this.email,
-    required this.username,
-  });
+  LoginDTO({required this.email, required this.password});
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    // Assuming the json object always contains the expected keys
-    return User(
-      id: json['id'],
-      email: json['email'],
-      username: json['username'],
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'password': password,
+    };
   }
 
-  // An empty User object factory for cases where you need a default User
-  factory User.empty() {
-    return const User(
-      id: 0,
-      email: '',
-      username: '',
+  factory LoginDTO.fromJson(Map<String, dynamic> json) {
+    return LoginDTO(
+    email: json['email'] as String,
+    password: json['password'] as String,
     );
   }
 }
