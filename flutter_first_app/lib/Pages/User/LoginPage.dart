@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first_app/Http/loginuser.dart';
-import 'package:flutter_first_app/Pages/CreateUserPage.dart';
+import 'package:flutter_first_app/Http/User/loginuser.dart';
+import 'package:flutter_first_app/Pages/User/CreateUserPage.dart';
 import 'package:flutter_first_app/models/user.dart';
-
-
 
 class LoginPage extends StatefulWidget {
   @override
@@ -30,14 +28,15 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         await _authService.login(loginDTO);
-        // Navigate to HomePage on successful login
+        // Navigate to HomePage or another page on successful login
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => LoginPage()), // Replace with the correct page
         );
       } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Login failed')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())), // Shows specific error message
+        );
       } finally {
         setState(() {
           _isLoading = false;
@@ -57,8 +56,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    "assets/background.jpg"), // Tilføj en baggrundsbillede
+                image: AssetImage("assets/background.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -129,11 +127,9 @@ class _LoginPageState extends State<LoginPage> {
                                     onPressed: _login,
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                        borderRadius: BorderRadius.circular(8.0),
                                       ),
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 16.0),
+                                      padding: EdgeInsets.symmetric(vertical: 16.0),
                                     ),
                                     child: Text(
                                       'Login',
@@ -145,8 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CreateUserPage()),
+                                  MaterialPageRoute(builder: (context) => CreateUserPage()),
                                 );
                               },
                               child: Text(

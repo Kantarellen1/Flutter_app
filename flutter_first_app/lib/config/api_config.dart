@@ -2,5 +2,5 @@
 
 class ApiConfig {
   static final String apiUrl =
-    'https://localhost:7173';
+    'https://h4-projekt-gruppe-4-1.onrender.com' ;
 }

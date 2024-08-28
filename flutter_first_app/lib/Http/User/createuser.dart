@@ -6,7 +6,7 @@ import 'package:flutter_first_app/config/api_config.dart';
 
 
 
-Future<LoginDTO> createUser(String email, String username, String password) async {
+Future<LoginDTO> createUser(String firstname, String lastname, String email, String username, String password, String address, String postal, String city) async {
   final String baseUrl = ApiConfig.apiUrl;
   final response = await http.post(
     Uri.parse('$baseUrl/api/user/signup'),  
@@ -15,9 +15,14 @@ Future<LoginDTO> createUser(String email, String username, String password) asyn
     },
     body: jsonEncode(<String, String>{
       
+      'firstname': firstname,
+      'lastname': lastname,
       'email' : email,
       'username': username,
-      'password':password
+      'password':password,
+      'address': address,
+      'postal': postal,
+      'city': city
     }),
   );
   if (response.statusCode==201){
