@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_first_app/models/event.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_first_app/config/api_config.dart';
 
-void main() => runApp(MyApp());
+
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -28,48 +32,69 @@ class CreateEvent extends StatefulWidget {
 
 class CreateEventState extends State<CreateEvent> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final String baseUrl = ApiConfig.apiUrl;
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController typeController = TextEditingController();
+  final TextEditingController catergoryController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+
 
   @override
   void dispose() {
-    nameController.dispose();
-    emailController.dispose();
+   
     super.dispose();
   }
 
   Future<void> _submitData() async {
     if (_formKey.currentState!.validate()) {
-      final name = nameController.text;
-      final email = emailController.text;
+   
+    
+      final type = typeController.text;
+      final category = catergoryController.text;
+      final description = descriptionController.text;
 
       // Call the method to send data to the backend
-      await createevent(name, email);
-    }
-  }
+      try {
+        final EventDTO newEventDTO = await createevent(
+            type, category, description);
 
-  Future<void> createevent(String name, String email) async {
-    final url = Uri.parse('https://your-backend-url.com/api/create'); // Replace with your API URL
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'name': name, 'email': email}),
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully created instance
-        print('Data submitted successfully');
-      } else {
-        // Handle the error
-        print('Failed to submit data');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Description ${newEventDTO.description} created successfully."),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to create Event: $e"),
+          ),
+        );
       }
-    } catch (error) {
-      // Handle any errors that occur during the request
-      print('Error occurred: $error');
     }
   }
+
+  Future<EventDTO> createevent( String type,String category,String description) async 
+    {
+    final String baseUrl = ApiConfig.apiUrl;
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/events/create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+        body: json.encode(<String, String>{
+          
+          'type':type,
+          'category':category,
+          'description':description,
+        }),
+      );
+      if (response.statusCode == 201) {
+      return EventDTO.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    } else {
+      throw Exception('Failed to create event: ${response.statusCode} - ${response.body}');
+    }
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -79,32 +104,42 @@ class CreateEventState extends State<CreateEvent> {
         key: _formKey,
         child: Column(
           children: [
-            TextFormField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
+           /* TextFormField(
+              controller: dateController,
+              decoration: InputDecoration(labelText: 'Date'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your name';
+                  return 'Please choose date';
                 }
                 return null;
               },
-            ),
+            ), */
             TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              controller: typeController,
+              decoration: InputDecoration(labelText: 'Type'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
+                  return 'What type';
                 }
                 return null;
               },
             ),
              TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              controller: catergoryController,
+              decoration: InputDecoration(labelText: 'Category'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
+                  return 'What category';
+                }
+                return null;
+              },
+            ),
+             TextFormField(
+              controller: descriptionController,
+              decoration: InputDecoration(labelText: 'Description'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Descripe event';
                 }
                 return null;
               },
@@ -120,3 +155,4 @@ class CreateEventState extends State<CreateEvent> {
     );
   }
 }
+

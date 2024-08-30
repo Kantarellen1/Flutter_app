@@ -17,16 +17,19 @@ Future<void> createevent(EventDTO EventDTO) async {
         body: jsonEncode(EventDTO.toJson()),
       );
 
-      if (response.statusCode == 200) {
+if (response.statusCode == 200) {
         // Successfully created instance
         print('Data submitted successfully');
-      } else {
-        // Handle the error
-        print('Failed to submit data');
-      }
-    } catch (error) {
+      }  
+else{
+      
+         print('Login failed with status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    throw Exception('Login failed: ${response.statusCode} - ${response.body}');
+    }
+  }
+     catch (error) {
       // Handle any errors that occur during the request
       print('Error occurred: $error');
     }
-  }
-
+}
