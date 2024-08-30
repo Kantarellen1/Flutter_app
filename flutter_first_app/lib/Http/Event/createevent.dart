@@ -9,7 +9,7 @@ import 'package:flutter_first_app/config/api_config.dart';
 
 Future<void> createevent(EventDTO EventDTO) async {
   final String baseUrl = ApiConfig.apiUrl;
-    final url = Uri.parse('$baseUrl/api/event/create');
+    final url = Uri.parse('$baseUrl/api/Event/Create');
  try {
       final response = await http.post(
         url,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_first_app/models/event.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -34,10 +35,12 @@ class CreateEventState extends State<CreateEvent> {
   final _formKey = GlobalKey<FormState>();
   final String baseUrl = ApiConfig.apiUrl;
   final TextEditingController dateController = TextEditingController();
+  final TextEditingController user_idController = TextEditingController();
+  final TextEditingController place_idController = TextEditingController();
   final TextEditingController typeController = TextEditingController();
-  final TextEditingController catergoryController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-
+           
 
   @override
   void dispose() {
@@ -48,15 +51,17 @@ class CreateEventState extends State<CreateEvent> {
   Future<void> _submitData() async {
     if (_formKey.currentState!.validate()) {
    
-    
+      final date = dateController.text;
+      final user_id = user_idController;
+      final place_id = place_idController;
       final type = typeController.text;
-      final category = catergoryController.text;
+      final category = categoryController.text;
       final description = descriptionController.text;
 
       // Call the method to send data to the backend
       try {
         final EventDTO newEventDTO = await createevent(
-            type, category, description);
+           user_id as String, place_id as String ,date, type, category, description);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -73,16 +78,18 @@ class CreateEventState extends State<CreateEvent> {
     }
   }
 
-  Future<EventDTO> createevent( String type,String category,String description) async 
+  Future<EventDTO> createevent(String user_id, String place_id, String date, String type,String category,String description) async 
     {
     final String baseUrl = ApiConfig.apiUrl;
       final response = await http.post(
-        Uri.parse('$baseUrl/api/events/create'),
+        Uri.parse('$baseUrl/api/event/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
         body: json.encode(<String, String>{
-          
+          //'date': date,
+          'user_id': user_id,
+          'place_id':place_id,
           'type':type,
           'category':category,
           'description':description,
@@ -104,8 +111,9 @@ class CreateEventState extends State<CreateEvent> {
         key: _formKey,
         child: Column(
           children: [
-           /* TextFormField(
+            TextFormField(
               controller: dateController,
+       
               decoration: InputDecoration(labelText: 'Date'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -113,7 +121,27 @@ class CreateEventState extends State<CreateEvent> {
                 }
                 return null;
               },
-            ), */
+            ),
+                TextFormField(
+              controller: place_idController,
+              decoration: InputDecoration(labelText: 'Where'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please choose place';
+                }
+                return null;
+              },
+            ), 
+                TextFormField(
+              controller: user_idController,
+              decoration: InputDecoration(labelText: 'Who created'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please choose him';
+                }
+                return null;
+              },
+            ), 
             TextFormField(
               controller: typeController,
               decoration: InputDecoration(labelText: 'Type'),
@@ -125,7 +153,7 @@ class CreateEventState extends State<CreateEvent> {
               },
             ),
              TextFormField(
-              controller: catergoryController,
+              controller: categoryController,
               decoration: InputDecoration(labelText: 'Category'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
